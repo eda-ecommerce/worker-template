@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 
 
 using IHost host = Host.CreateDefaultBuilder(args)
@@ -15,16 +13,11 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         IConfiguration configuration = hostContext.Configuration;
 
-        //// Read appsettings
-        //IConfigurationRoot configuration = new ConfigurationBuilder()
-        //    .SetBasePath(Directory.GetCurrentDirectory())
-        //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        //    .AddEnvironmentVariables()
-        //    .Build();
-
+        // Read appsettings
+        var connectionstring = configuration.GetConnectionString("SqlServer");
         // DbContext
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
+            options.UseSqlServer(connectionstring));
 
         // DI services
         services.AddScoped<App>();
