@@ -67,7 +67,7 @@ public class ConsumerService : IConsumerService
                     
 //                     
                     // Handle message...
-                    var user = JsonSerializer.Deserialize<User>(consumeResult.Message.Value)!;
+                    var user = JsonSerializer.Deserialize<Payment>(consumeResult.Message.Value)!;
                    
                     
                    

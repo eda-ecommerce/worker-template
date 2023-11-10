@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceConsumerPlayground.Models;
 
-public class User
+public class Payment
 {
     [Key]
     public Guid UserId { get; set; }

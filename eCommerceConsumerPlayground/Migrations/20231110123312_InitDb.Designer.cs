@@ -12,7 +12,7 @@ using eCommerceConsumerPlayground.Models;
 namespace eCommerceConsumerPlayground.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231106181311_InitDb")]
+    [Migration("20231110123312_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace eCommerceConsumerPlayground.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ECommerceConsumerPlayground.Models.User", b =>
+            modelBuilder.Entity("ECommerceConsumerPlayground.Models.Payment", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace eCommerceConsumerPlayground.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Payments");
                 });
 #pragma warning restore 612, 618
         }
