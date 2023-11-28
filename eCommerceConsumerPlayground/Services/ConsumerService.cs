@@ -4,6 +4,7 @@ using ECommerceConsumerPlayground.Services.Interfaces;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace ECommerceConsumerPlayground.Services;
 
@@ -19,6 +20,7 @@ public class ConsumerService : IConsumerService
     private readonly string KAFKA_BROKER;
     private readonly string KAFKA_TOPIC1;
     private readonly string KAFKA_GROUPID;
+    private readonly string KAFKA_TOPIC2;
 
     public ConsumerService(ILogger<ConsumerService> logger, IConfiguration configuration, IUserStore userStore)
     {
@@ -26,12 +28,14 @@ public class ConsumerService : IConsumerService
         // Get appsettings and set as static variable
         KAFKA_BROKER = _configuration.GetValue<string>("Kafka:Broker")!;
         KAFKA_TOPIC1 = _configuration.GetValue<string>("Kafka:Topic1")!;
+        KAFKA_TOPIC2 = _configuration.GetValue<string>("Kafka:Topic2")!;
         KAFKA_GROUPID = _configuration.GetValue<string>("Kafka:GroupId")!;
 
-        KAFKA_BROKER = "localhost:29092";
-        KAFKA_GROUPID = "ecommerce-gp";
-        KAFKA_TOPIC1 = "test-1";
-        
+        //KAFKA_BROKER = "localhost:29092";
+        //KAFKA_GROUPID = "ecommerce-gp";
+        //KAFKA_TOPIC1 = "test-1";
+        //KAFKA_TOPIC2 = "payment";
+
         var consumerConfig = new ConsumerConfig
         {
             BootstrapServers = KAFKA_BROKER,
@@ -68,10 +72,23 @@ public class ConsumerService : IConsumerService
 //                     
                     // Handle message...
                     var user = JsonSerializer.Deserialize<Payment>(consumeResult.Message.Value)!;
-                   
-                    
-                   
-                    
+
+                    // Produce messages
+                    ProducerConfig configProducer = new ProducerConfig
+                    {
+                        BootstrapServers = KAFKA_BROKER,
+                        ClientId = Dns.GetHostName()
+                    };
+
+                    using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
+
+                    var result = await producer.ProduceAsync(KAFKA_TOPIC2, new Message<Null, string>
+                    {
+                        Value = JsonSerializer.Serialize<Payment>(user)
+                    });
+
+
+
                     // Persistence
                     await _userStore.SaveDataAsync(user);
                 }
